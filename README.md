@@ -25,6 +25,9 @@ Just watch this introduction video https://youtu.be/qcRKmm3B25c?si=9VMqPcrBtKhbT
 
 
 
+
+
+
 ## About the program
 
 ## Why should I use this?
@@ -60,6 +63,9 @@ The book should download and store itself in a file named BabelBookOut.txt
 #### Convert Manual into Automatic query mode:
 Paste the hex, wall, shelf, and volume
 The automatic query should display in a file named AutoQueryOut.txt, just open the file and copy the query ID
+
+
+
 
 
 
