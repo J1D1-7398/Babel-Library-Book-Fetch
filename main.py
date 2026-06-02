@@ -32,18 +32,41 @@ subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
 print("\nBabel Library Book Downloader\n")
 
 #Select mode
-mode = input("Select an option (1/2/3/4/5):\n1. Automatic\n2. Manual\n3. Convert Manual into Automatic query\n4. Use bookmark link to get single page\n5. Exit\n> ")
+mode = input("Select an option (1/2/3/4/5):\n1. Use bookmark link to get single page (Recommended)\n2. Automatic mode\n3. Manual mode\n4. Convert Manual into Automatic query\n5. Exit\n> ")
 subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
 
-#Automatic Mode
+
 if mode == "1":
+    selected_mode = input("Select Mode (1/2):\n1. Get page with shortened bookmark\n2. Get shortened bookmark from bookmark link\n3. Exit\n> ")
+    if selected_mode == "1":
+        bookmark_ID = input("\nEnter bookmark ID: ")
+        url = f"https://libraryofbabel.info/bookmark.cgi?{bookmark_ID}"
+        try:
+            text = requests.get(url)
+            text = text.text.split("<PRE id = \"textblock\">\n")[1].split("</PRE></div>")[0]
+            with open("BabelPageOut.txt", "w+") as f:
+                f.write(text)
+            print("Successfully downloaded page\nSearch for file BabelPageOut.txt")
+        except Exception as e:
+            print(f"There has been an error: {e}")
+    elif selected_mode == "2":
+        bookmark_link = input("\nEnter bookmark link: ")
+        print(f"\nBookmark ID: {bookmark_link.replace("https://libraryofbabel.info/bookmark.cgi?", "")}")
+    elif selected_mode == "3":
+        print("Exiting...")
+        exit()
+    else:
+        print("Invalid mode selected")
+
+#Automatic Mode
+elif mode == "2":
     print("\nSelected Mode: Automatic\n")
     id_of_search = input("Enter ID to generate text: ").strip()
     subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
     print(f"\nSelected ID: {f"{id_of_search[:10]}..." if len(id_of_search) > 10 else id_of_search}")
     ready_for_decompression_id = f"b'{id_of_search}'"
     decompressed_id_of_search = zlib.decompress(eval(ready_for_decompression_id)).decode()
-    vol = decompressed_id_of_search[-2:]
+    vol = decompressed_id_of_search[-2:].replace("0", "")
     shelf = decompressed_id_of_search[-3]
     wall = decompressed_id_of_search[-4]
     hexagon = decompressed_id_of_search[:-4]
@@ -53,7 +76,7 @@ if mode == "1":
     
 
 #Manual Mode
-elif mode == "2":
+elif mode == "3":
     print("\nSelected Mode: Manual\n")
     hexagon = input("Enter Hexagon name: ")
     while check_hex_isvalid(hexagon) == False or not hexagon:
@@ -87,7 +110,7 @@ elif mode == "2":
     get_babel_text(hexagon, wall, shelf, vol)
     print("\nSuccessfully downloaded file!\nSearch in your current directory for a file named \"BabelBookOut.txt\"\n")
 
-elif mode == "3":
+elif mode == "4":
     print("\nSelected Mode: Convert Manual into Automatic query\n")
     hexagon = input("Enter Hexagon name: ")
     while check_hex_isvalid(hexagon) == False or not hexagon:
@@ -116,6 +139,8 @@ elif mode == "3":
     vol = input("Enter Volume number (1-32): ")
     while not vol or check_vol_isvalid(vol) == False or int(vol) > 32 or int(vol) < 1:
         vol = input("Enter Volume number (1-32): ")
+    if vol < 10:
+        vol = f"0{vol}"
     subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
     
     automatic_query = f"{hexagon}{wall}{shelf}{vol}"
@@ -129,25 +154,6 @@ elif mode == "3":
     with open("AutoQueryOut.txt", "w") as write_auto_query_to_file:
         write_auto_query_to_file.write(str(compressed_automatic_query)[2:-1])
         print("\nWritten to output file\nSearch in your current directory for a file named \"AutoQueryOut.txt\"")
-
-elif mode == "4":
-    selected_mode = input("Select Mode (1/2):\n1. Get page with bookmark ID\n2. Get bookmark ID from bookmark link\n> ")
-    if selected_mode == "1":
-        bookmark_ID = input("\nEnter bookmark ID: ")
-        url = f"https://libraryofbabel.info/bookmark.cgi?{bookmark_ID}"
-        try:
-            text = requests.get(url)
-            text = text.text.split("<PRE id = \"textblock\">\n")[1].split("</PRE></div>")[0]
-            with open("BabelPageOut.txt", "w+") as f:
-                f.write(text)
-            print("Successfully downloaded page")
-        except Exception as e:
-            print(f"There has been an error: {e}")
-    elif selected_mode == "2":
-        bookmark_link = input("\nEnter bookmark link: ")
-        print(f"\nBookmark ID: {bookmark_link.replace("https://libraryofbabel.info/bookmark.cgi?", "")}")
-    else:
-        print("Invalid mode selected")
 
 elif mode == "5":
     print("Exiting...")
