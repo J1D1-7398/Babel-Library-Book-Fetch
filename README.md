@@ -67,6 +67,7 @@ It opens up three options:
 3. Exit
 
 1: Type the shortened bookmark in the input field and the page will download in a file named BabelPageOut.txt in the current working directory
+
 ⚠️ Attention: If the entered bookmark is invalid, the output will just be a random babel page which most of the time is just gibberish
 
 2: Type in the bookmark link copied from the website into the input field and a shortened bookmark should be printed.
