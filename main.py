@@ -3,8 +3,8 @@ import requests, subprocess, os, string, zlib
 
 #Request to server function
 def get_babel_text(hexagon_get, wall_get, shelf_get, vol_get):
-    dataforurl = {"hex":hexagon_get,"wall":wall_get,"shelf":shelf_get,"volume":vol_get,"page":"1","title":"the blue project babel"}
-    url = f"https://libraryofbabel.info/download.cgi"
+    dataforurl = {"hex":hexagon_get,"wall":wall_get,"shelf":shelf_get,"volume":vol_get,"page":"1","title":"babel book"}
+    url = "https://libraryofbabel.info/download.cgi"
     text = requests.post(url, data=dataforurl)
     with open("BabelBookOut.txt", "w") as f:
         f.write(text.text)
@@ -29,10 +29,10 @@ def check_vol_isvalid(volume):
 
 #Title
 subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
-print("\nThe BLUE system Babel Library\n")
+print("\nBabel Library Book Downloader\n")
 
 #Select mode
-mode = input("Select an option (1/2):\n1. Automatic\n2. Manual\n3. Convert Manual into Automatic query\n> ")
+mode = input("Select an option (1/2/3/4/5):\n1. Automatic\n2. Manual\n3. Convert Manual into Automatic query\n4. Use bookmark link to get single page\n5. Exit\n> ")
 subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
 
 #Automatic Mode
@@ -130,16 +130,29 @@ elif mode == "3":
         write_auto_query_to_file.write(str(compressed_automatic_query)[2:-1])
         print("\nWritten to output file\nSearch in your current directory for a file named \"AutoQueryOut.txt\"")
 
+elif mode == "4":
+    selected_mode = input("Select Mode (1/2):\n1. Get page with bookmark ID\n2. Get bookmark ID from bookmark link\n> ")
+    if selected_mode == "1":
+        bookmark_ID = input("\nEnter bookmark ID: ")
+        url = f"https://libraryofbabel.info/bookmark.cgi?{bookmark_ID}"
+        try:
+            text = requests.get(url)
+            text = text.text.split("<PRE id = \"textblock\">\n")[1].split("</PRE></div>")[0]
+            with open("BabelPageOut.txt", "w+") as f:
+                f.write(text)
+            print("Successfully downloaded page")
+        except Exception as e:
+            print(f"There has been an error: {e}")
+    elif selected_mode == "2":
+        bookmark_link = input("\nEnter bookmark link: ")
+        print(f"\nBookmark ID: {bookmark_link.replace("https://libraryofbabel.info/bookmark.cgi?", "")}")
+    else:
+        print("Invalid mode selected")
+
+elif mode == "5":
+    print("Exiting...")
+    exit()
+
 #Incorrect mode selected
 else:
     print("No valid mode was selected")
-
-
-
-
-
-
-#To represent chars that are not lowercase nor space, comma or period:
-#,,, Special Character Code ,,,
-#Close a special code inside comma type brackets
-#For Special Character Code use smth like morse with dots smth like . for short and .. for long
